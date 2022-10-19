@@ -70,6 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return InkWell(
       onTap: () async {
         //add controllers
+        try{
         await SignupWithEmailAndPassword.signupWithEmailAndPassword(
           nameController.text,
           passwordController.text,
@@ -78,6 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
         if(u.UserOrAdmin.isUser!){
           Navigator.of(context).pushReplacementNamed('/home');
         }
+        }catch(err){}
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
