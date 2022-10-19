@@ -1,9 +1,11 @@
 import 'package:auth_providers/api/auth/signin_with_email_and_password.dart';
 import 'package:auth_providers/api/auth/signup_with_email_and_password.dart';
+import 'package:auth_providers/screens/user_or_admin.dart';
 import 'package:flutter/material.dart';
 
 import 'login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../user_or_admin.dart' as u;
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key? key, this.title}) : super(key: key);
@@ -73,6 +75,9 @@ class _SignUpPageState extends State<SignUpPage> {
           passwordController.text,
           context
         );
+        if(u.UserOrAdmin.isUser!){
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
