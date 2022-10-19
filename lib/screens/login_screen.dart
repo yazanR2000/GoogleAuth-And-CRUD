@@ -31,7 +31,6 @@ class _Login_screenState extends State<Login_screen> {
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        
       ),
       body: Padding(
           padding: const EdgeInsets.all(10),
@@ -102,12 +101,14 @@ class _Login_screenState extends State<Login_screen> {
                       backgroundColor: Color(0xffe46b10)),
                   child: const Text('Login'),
                   onPressed: () async {
-                    await SigninWithEmailAndPassword.signWithEmailAndPassword(
-                      nameController.text,
-                      passwordController.text,
-                      context,
-                    );
-                    Navigator.of(context).pushReplacementNamed('/home');
+                    try {
+                      await SigninWithEmailAndPassword.signWithEmailAndPassword(
+                        nameController.text,
+                        passwordController.text,
+                        context,
+                      );
+                      Navigator.of(context).pushReplacementNamed('/home');
+                    } catch (err) {}
                     // print(nameController.text);
                     // print(passwordController.text);
                   },
@@ -125,8 +126,10 @@ class _Login_screenState extends State<Login_screen> {
                           ),
                         ),
                         onPressed: () async {
-                        await Google.signinWithGoogle();
-                         Navigator.of(context).pushReplacementNamed('/home');
+                          try{
+                          await Google.signinWithGoogle();
+                          Navigator.of(context).pushReplacementNamed('/home');
+                          }catch(err){}
                         },
                         icon: const FaIcon(FontAwesomeIcons.google),
                         label: const Text("Signin with google"),
