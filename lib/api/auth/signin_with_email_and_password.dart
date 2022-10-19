@@ -43,6 +43,7 @@ class SigninWithEmailAndPassword {
           ),
         ),
       );
+      throw err;
     }
   }
 

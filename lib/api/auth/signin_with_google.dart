@@ -15,7 +15,7 @@ class Google {
       );
       final User = await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (err) {
-      print(err);
+      throw err;
     }
   }
 }

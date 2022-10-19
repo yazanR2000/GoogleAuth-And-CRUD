@@ -26,6 +26,12 @@ class SignupWithEmailAndPassword {
         password: password,
       );
     } catch (err) {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.blue,
+          content: Text(err.toString()),
+        ),
+      );
       throw err;
     }
   }
