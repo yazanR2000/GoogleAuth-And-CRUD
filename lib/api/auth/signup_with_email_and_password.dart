@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 
 class SignupWithEmailAndPassword {
   static Future signupWithEmailAndPassword(
-      String email, String password, BuildContext ctx) async {
+      String email, String password, BuildContext ctx,bool isAdmin) async {
     try {
-      if (!UserOrAdmin.isUser!) {
+      if (isAdmin) {
         await FirebaseFirestore.instance
             .collection("Requests")
             .add({"email": email, "password": password});
@@ -25,6 +25,7 @@ class SignupWithEmailAndPassword {
         email: email,
         password: password,
       );
+      
     } catch (err) {
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(

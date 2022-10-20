@@ -1,6 +1,7 @@
 import 'package:auth_providers/api/auth/reset_password.dart';
 import 'package:auth_providers/screens/user_or_admin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import './signup_Screen.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import '../api/auth/signin_with_google.dart';
 import '../api/auth/signin_with_email_and_password.dart';
 import '../api/auth/reset_password.dart';
 import '../user_or_admin.dart' as u;
+import '../widgets/user_or_admin.dart' as s;
 
 class Login_screen extends StatefulWidget {
   const Login_screen({Key? key}) : super(key: key);
@@ -20,18 +22,11 @@ class _Login_screenState extends State<Login_screen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<u.UserOrAdmin>(context, listen: false);
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(
-          color: Colors.black,
-        ),
-      ),
       body: Padding(
           padding: const EdgeInsets.all(10),
           child: ListView(
@@ -61,6 +56,13 @@ class _Login_screenState extends State<Login_screen> {
                     image: AssetImage("images/1.png"),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              s.UserOrAdmin(),
+              SizedBox(
+                height: 20,
               ),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -106,37 +108,45 @@ class _Login_screenState extends State<Login_screen> {
                         nameController.text,
                         passwordController.text,
                         context,
+                        !userProvider.isUser!,
                       );
-                      Navigator.of(context).pushReplacementNamed('/home');
                     } catch (err) {}
                     // print(nameController.text);
                     // print(passwordController.text);
                   },
                 ),
               ),
-              if (u.UserOrAdmin.isUser!)
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          textStyle: const TextStyle(
-                            color: Colors.white,
+              SizedBox(
+                height: 20,
+              ),
+              Consumer<u.UserOrAdmin>(
+                builder: ((context, value, child) {
+                  if (value.isUser!) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              textStyle: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () async {
+                              try {
+                                await Google.signinWithGoogle();
+                              } catch (err) {}
+                            },
+                            icon: const FaIcon(FontAwesomeIcons.google),
+                            label: const Text("Signin with google"),
                           ),
-                        ),
-                        onPressed: () async {
-                          try{
-                          await Google.signinWithGoogle();
-                          Navigator.of(context).pushReplacementNamed('/home');
-                          }catch(err){}
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.google),
-                        label: const Text("Signin with google"),
-                      ),
-                    )
-                  ],
-                ),
+                        )
+                      ],
+                    );
+                  }
+                  return Container();
+                }),
+              ),
               Row(
                 children: <Widget>[
                   const Text('Does not have account?'),

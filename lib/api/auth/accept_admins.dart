@@ -2,45 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MainAdmin {
-  final List<Request> _requests = [];
-
-  Future approvement(QueryDocumentSnapshot<Map<String, dynamic>> user) async {
+  static Future approvement(DocumentSnapshot? documentSnapshot) async {
     try {
       final UserCredential userAdmin =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: user['email'],
-        password: user['password'],
+        email: documentSnapshot!['email'],
+        password: documentSnapshot['password'],
       );
-      await FirebaseFirestore.instance.collection("Users").add({
-        "email": user['email'],
+      await FirebaseFirestore.instance.collection("Admins").add({
+        "email": documentSnapshot['email'],
       });
       await FirebaseFirestore.instance
           .collection("Requests")
-          .doc(user.id)
+          .doc(documentSnapshot.id)
           .delete();
     } catch (err) {
       throw err;
     }
   }
 
-  Future disApprovment(QueryDocumentSnapshot<Map<String, dynamic>> user) async {
-    try{
-      await FirebaseFirestore.instance.collection("Requests").doc(user.id).delete();
-    }catch(err){
+  static Future disApprovment(DocumentSnapshot? documentSnapshot) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("Requests")
+          .doc(documentSnapshot!.id)
+          .delete();
+    } catch (err) {
       throw err;
     }
   }
-
-  void addRequest(List<QueryDocumentSnapshot<Map<String, dynamic>>> requests) {
-    requests.forEach((element) {
-      _requests.add(
-        Request(element),
-      );
-    });
-  }
-}
-
-class Request {
-  final QueryDocumentSnapshot<Map<String, dynamic>> _request;
-  Request(this._request);
 }

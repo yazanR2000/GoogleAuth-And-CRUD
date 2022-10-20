@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import '../widgets/search.dart';
 
 import '../providers/products.dart' as p;
@@ -14,13 +15,12 @@ class _CategoryProductsState extends State<CategoryProducts> {
   final p.Products _products = p.Products.getInstance();
 
   void _addNewProduct(){
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserOrAdmin>(context,listen: false);
     final String category = _products.collection!;
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +39,7 @@ class _CategoryProductsState extends State<CategoryProducts> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: !UserOrAdmin.isUser! ? FloatingActionButton(
+      floatingActionButton: !userProvider.isUser! ? FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed('/add_new_product',arguments: _addNewProduct);
         },

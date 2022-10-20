@@ -1,6 +1,7 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import '../../user_or_admin.dart';
 class Google {
   static Future signinWithGoogle() async {
     try {
@@ -14,6 +15,7 @@ class Google {
         idToken: googleAuth.idToken,
       );
       final User = await FirebaseAuth.instance.signInWithCredential(credential);
+      
     } catch (err) {
       throw err;
     }

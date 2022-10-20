@@ -1,9 +1,19 @@
-class UserOrAdmin {
-  static bool? _isUser;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+class UserOrAdmin with ChangeNotifier {
+   bool? _isUser = true;
+   User? _currentUser;
 
-  static bool? get isUser => _isUser;
+   bool? get isUser => _isUser;
 
-  static set isUser(bool? value) {
+   set isUser(bool? value) {
     _isUser = value;
+    notifyListeners();
   }
+
+   set currentUser(User? value){
+    _currentUser = value;
+  }
+
+   User? get currentUser => _currentUser;
 }

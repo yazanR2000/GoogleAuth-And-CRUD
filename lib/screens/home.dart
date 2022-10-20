@@ -3,18 +3,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../providers/products.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-class Home extends StatelessWidget {
-  const Home({super.key});
+import '../user_or_admin.dart';
+import 'package:provider/provider.dart';
+class Home extends StatefulWidget {
+  Home({super.key});
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final user = FirebaseAuth.instance.currentUser;
+ 
+  @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserOrAdmin>(context,listen: false);
+    
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () async {
-            await FirebaseAuth.instance.signOut();
-            Navigator.of(context).pushReplacementNamed('/auth');
+            try {
+              await FirebaseAuth.instance.signOut();
+            } catch (err) {
+              print(err);
+            }
           },
           icon: const Icon(
             Icons.logout,
@@ -25,6 +38,15 @@ class Home extends StatelessWidget {
           height: 30,
           width: 40,
         ),
+        actions: [
+          if (user!.email == 'admin@admin.com')
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/main_admin_control');
+              },
+              child: const Text("Control admins"),
+            ),
+        ],
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("Categories").snapshots(),

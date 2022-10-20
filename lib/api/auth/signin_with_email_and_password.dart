@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 
 class SigninWithEmailAndPassword {
   static Future signWithEmailAndPassword(
-      String email, String password, BuildContext ctx) async {
+      String email, String password, BuildContext ctx,bool isAdmin) async {
     try {
-      if (!UserOrAdmin.isUser!) {
+      if (isAdmin) {
         final db = FirebaseFirestore.instance;
-        db.collection("Admins").get().then((querySnapshot) {
+        db.collection("Admins").get().then((querySnapshot) async {
           final admins = querySnapshot.docs;
           int i = 0;
           for (; i < admins.length; i++) {
             if (admins[i]['email'] == email) {
-              _signin(email, password);
               break;
             }
           }
@@ -28,10 +27,14 @@ class SigninWithEmailAndPassword {
                 ),
               ),
             );
+          }else{
+            await _signin(email,password);
+            
           }
         });
       } else {
         await _signin(email, password);
+        
       }
     } catch (err) {
       ScaffoldMessenger.of(ctx).showSnackBar(
@@ -48,9 +51,13 @@ class SigninWithEmailAndPassword {
   }
 
   static Future _signin(String email, String password) async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (err) {
+      throw err;
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:auth_providers/api/auth/signin_with_email_and_password.dart';
 import 'package:auth_providers/api/auth/signup_with_email_and_password.dart';
 import 'package:auth_providers/screens/user_or_admin.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,19 +68,15 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _submitButton() {
+    final userProvider = Provider.of<u.UserOrAdmin>(context,listen: false);
     return InkWell(
       onTap: () async {
         //add controllers
-        try{
-        await SignupWithEmailAndPassword.signupWithEmailAndPassword(
-          nameController.text,
-          passwordController.text,
-          context
-        );
-        if(u.UserOrAdmin.isUser!){
-          Navigator.of(context).pushReplacementNamed('/home');
-        }
-        }catch(err){}
+        try {
+          await SignupWithEmailAndPassword.signupWithEmailAndPassword(
+              nameController.text, passwordController.text, context,!userProvider.isUser!);
+          Navigator.of(context).pop();
+        } catch (err) {}
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

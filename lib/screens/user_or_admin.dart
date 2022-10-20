@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../user_or_admin.dart' as u;
 
 class UserOrAdmin extends StatelessWidget {
@@ -6,6 +7,7 @@ class UserOrAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<u.UserOrAdmin>(context,listen: false);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -18,7 +20,7 @@ class UserOrAdmin extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      u.UserOrAdmin.isUser = false;
+                      userProvider.isUser = false;
                       Navigator.of(context).pushNamed('/auth');
                     },
                     child: const Text("Admin"),
@@ -34,7 +36,7 @@ class UserOrAdmin extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      u.UserOrAdmin.isUser = true;
+                      userProvider.isUser = true;
                       Navigator.of(context).pushNamed('/auth');
                     },
                     child: const Text("User"),

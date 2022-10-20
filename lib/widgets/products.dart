@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../providers/products.dart';
 import './product_info.dart';
 import '../user_or_admin.dart';
@@ -18,6 +19,7 @@ class Products extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserOrAdmin>(context,listen: false);
     return Expanded(
       child: ListView.separated(
         itemBuilder: (context, index) {
@@ -69,7 +71,7 @@ class Products extends StatelessWidget {
                       "\$${product['price']}",
                       style: const TextStyle(fontSize: 30),
                     ),
-                    if (!UserOrAdmin.isUser!)
+                    if (!userProvider.isUser!)
                       Container(
                         decoration: BoxDecoration(
                           color:
