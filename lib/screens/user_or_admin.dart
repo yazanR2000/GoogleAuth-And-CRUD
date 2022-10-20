@@ -19,7 +19,7 @@ class UserOrAdmin extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       u.UserOrAdmin.isUser = false;
-                      Navigator.of(context).pushReplacementNamed('/auth');
+                      Navigator.of(context).pushNamed('/auth');
                     },
                     child: const Text("Admin"),
                   ),
