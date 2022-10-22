@@ -68,13 +68,18 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _submitButton() {
-    final userProvider = Provider.of<u.UserOrAdmin>(context,listen: false);
+    final userProvider = Provider.of<u.UserOrAdmin>(context, listen: false);
     return InkWell(
       onTap: () async {
         //add controllers
         try {
           await SignupWithEmailAndPassword.signupWithEmailAndPassword(
-              nameController.text, passwordController.text, context,!userProvider.isUser!);
+            nameController.text,
+            passwordController.text,
+            context,
+            !userProvider.isUser!,
+          );
+          // ignore: use_build_context_synchronously
           Navigator.of(context).pop();
         } catch (err) {}
       },

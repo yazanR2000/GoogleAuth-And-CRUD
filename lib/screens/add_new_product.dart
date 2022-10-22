@@ -24,9 +24,7 @@ class _AddNewProductState extends State<AddNewProduct> {
       imageQuality: 50,
     );
     _info['imageUrl'] = image;
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   final _formKey = GlobalKey<FormState>();

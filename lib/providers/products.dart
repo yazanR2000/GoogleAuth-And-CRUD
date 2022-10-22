@@ -38,7 +38,7 @@ class Products {
       await uploadTask.whenComplete(() async {
         dowurl = await ref.getDownloadURL();
       });
-      await db.collection("Shirts").add({
+      await db.collection(_collection!).add({
         "imageUrl": dowurl,
         "title": details['name'],
         "price": double.parse(details['price']),

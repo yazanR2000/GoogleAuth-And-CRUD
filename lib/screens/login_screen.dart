@@ -22,152 +22,190 @@ class _Login_screenState extends State<Login_screen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool? _isLoading = false;
+
+  void _changeStateOfLoading() {
+    setState(() {
+      _isLoading = !_isLoading!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<u.UserOrAdmin>(context, listen: false);
 
     return Scaffold(
-      body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: _title(),
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Sign in',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Color(0xffe46b10),
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                height: 100,
-                width: 100,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("images/1.png"),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              s.UserOrAdmin(),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'User Name',
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: TextField(
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await ResetPassword.resetPassword(nameController.text);
-                },
-                child: const Text(
-                  'Forgot Password',
-                  style: TextStyle(
-                      color: Color(0xffe46b10), fontStyle: FontStyle.italic),
-                ),
-              ),
-              Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffe46b10)),
-                  child: const Text('Login'),
-                  onPressed: () async {
-                    try {
-                      await SigninWithEmailAndPassword.signWithEmailAndPassword(
-                        nameController.text,
-                        passwordController.text,
-                        context,
-                        !userProvider.isUser!,
-                      );
-                    } catch (err) {}
-                    // print(nameController.text);
-                    // print(passwordController.text);
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Consumer<u.UserOrAdmin>(
-                builder: ((context, value, child) {
-                  if (value.isUser!) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              textStyle: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            onPressed: () async {
-                              try {
-                                await Google.signinWithGoogle();
-                              } catch (err) {}
-                            },
-                            icon: const FaIcon(FontAwesomeIcons.google),
-                            label: const Text("Signin with google"),
-                          ),
-                        )
-                      ],
-                    );
-                  }
-                  return Container();
-                }),
-              ),
-              Row(
+      body: _isLoading!
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(10),
+              child: ListView(
                 children: <Widget>[
-                  const Text('Does not have account?'),
-                  TextButton(
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: _title(),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
                     child: const Text(
-                      'Sign up',
-                      style: TextStyle(fontSize: 20),
+                      'Sign in',
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Color(0xffe46b10),
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold),
                     ),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return SignUpPage();
-                        },
-                      ));
+                  ),
+                  Container(
+                    height: 100,
+                    width: 100,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("images/1.png"),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  s.UserOrAdmin(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'User Name',
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextField(
+                      obscureText: true,
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      try {
+                        _changeStateOfLoading();
+                        await ResetPassword.resetPassword(nameController.text);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Text(
+                                "Reset password email has been sent successfully"),
+                          ),
+                        );
+                      } catch (err) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(
+                              err.toString(),
+                            ),
+                          ),
+                        );
+                      }
+                      _changeStateOfLoading();
                     },
-                  )
+                    child: const Text(
+                      'Forgot Password',
+                      style: TextStyle(
+                          color: Color(0xffe46b10),
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xffe46b10)),
+                      child: const Text('Login'),
+                      onPressed: () async {
+                        try {
+                          _changeStateOfLoading();
+                          await SigninWithEmailAndPassword
+                              .signWithEmailAndPassword(
+                            nameController.text,
+                            passwordController.text,
+                            context,
+                            !userProvider.isUser!,
+                          );
+                        } catch (err) {}
+                        _changeStateOfLoading();
+                        // print(nameController.text);
+                        // print(passwordController.text);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Consumer<u.UserOrAdmin>(
+                    builder: ((context, value, child) {
+                      if (value.isUser!) {
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  textStyle: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    _changeStateOfLoading();
+                                    await Google.signinWithGoogle();
+                                  } catch (err) {}
+                                  _changeStateOfLoading();
+                                },
+                                icon: const FaIcon(FontAwesomeIcons.google),
+                                label: const Text("Signin with google"),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                      return Container();
+                    }),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      const Text('Does not have account?'),
+                      TextButton(
+                        child: const Text(
+                          'Sign up',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return SignUpPage();
+                            },
+                          ));
+                        },
+                      )
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
                 ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-            ],
-          )),
+              )),
     );
   }
 }
